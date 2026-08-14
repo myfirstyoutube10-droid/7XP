@@ -1,0 +1,8 @@
+requests
+urllib3
+pycryptodome
+colorama
+protobuf-decoder
+aiohttp
+flask
+gunicorn
