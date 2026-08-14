@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7XP HOS — Premium Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #070b14;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED BACKGROUND PARTICLES ===== */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,255,200,0.12), rgba(0,229,255,0.05));
+            animation: floatParticle linear infinite;
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0.3) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.4) rotate(720deg); opacity: 0; }
+        }
+
+        /* ===== GLOWING ORB BACKGROUND ===== */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 229, 255, 0.06);
+            top: -100px;
+            right: -100px;
+            animation: orbFloat 12s ease-in-out infinite alternate;
+        }
+        .glow-orb-2 {
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 255, 136, 0.05);
+            bottom: -50px;
+            left: -50px;
+            animation: orbFloat 15s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 40px) scale(1.2); }
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1260px;
+            width: 100%;
+            background: rgba(8, 14, 26, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 255, 200, 0.08);
+            border-radius: 52px;
+            padding: 38px 34px;
+            box-shadow: 0 40px 100px -20px rgba(0,0,0,0.9), 0 0 80px rgba(0, 200, 255, 0.02), inset 0 1px 0 rgba(255,255,255,0.02);
+            transition: all 0.4s ease;
+        }
+        .container:hover {
+            box-shadow: 0 45px 120px -20px rgba(0,0,0,0.95), 0 0 100px rgba(0, 200, 255, 0.04);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(0, 255, 200, 0.05);
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 40%;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(0,255,200,0.3), transparent);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #00e5ff, #00ff88);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #070b14;
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.25);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 8px 30px rgba(0, 255, 136, 0.25); }
+            50% { box-shadow: 0 8px 50px rgba(0, 255, 136, 0.4); }
+        }
+        .logo h1 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00e5ff 0%, #00ff88 40%, #00e5ff 80%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradShift 6s ease infinite;
+            letter-spacing: -0.5px;
+        }
+        @keyframes gradShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .logo h1 span {
+            -webkit-text-fill-color: #00ff88;
+        }
+
+        .status-badge {
+            padding: 10px 26px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            background: rgba(0, 255, 136, 0.06);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.12);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+        }
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 25px #00ff8866;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: rgba(0, 255, 200, 0.02);
+            border-radius: 26px;
+            padding: 22px 14px;
+            border: 1px solid rgba(0, 255, 200, 0.04);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 26px;
+            padding: 1px;
+            background: conic-gradient(from 0deg, transparent, rgba(0,255,200,0.05), transparent, rgba(0,255,200,0.05), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.6s;
+        }
+        .stat-card:hover::before { opacity: 1; }
+        .stat-card:hover {
+            border-color: rgba(0, 255, 200, 0.15);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00e5ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            transition: all 0.3s;
+        }
+        .stat-label {
+            color: #7a8aa0;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 720px) {
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+        .control-card {
+            background: rgba(0, 255, 200, 0.015);
+            border-radius: 30px;
+            padding: 26px 24px;
+            border: 1px solid rgba(0, 255, 200, 0.035);
+            backdrop-filter: blur(6px);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        .control-card:hover {
+            border-color: rgba(0, 255, 200, 0.08);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+        }
+        .control-card h3 {
+            color: #c8d8ec;
+            font-weight: 600;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 13px 20px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            flex: 1;
+            min-width: 80px;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+            pointer-events: none;
+            border-radius: 60px;
+        }
+        .btn-start {
+            background: linear-gradient(135deg, #00ff88, #00dd77);
+            color: #070b14;
+            box-shadow: 0 4px 25px rgba(0, 255, 136, 0.2);
+        }
+        .btn-start:hover {
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 8px 40px rgba(0, 255, 136, 0.3);
+        }
+        .btn-stop {
+            background: linear-gradient(135deg, #ff4466, #dd3355);
+            color: #fff;
+            box-shadow: 0 4px 25px rgba(255, 68, 102, 0.2);
+        }
+        .btn-stop:hover {
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 8px 40px rgba(255, 68, 102, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00e5ff, #00ccdd);
+            color: #070b14;
+            box-shadow: 0 4px 25px rgba(0, 229, 255, 0.15);
+        }
+        .btn-primary:hover {
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 8px 40px rgba(0, 229, 255, 0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #2a3a52;
+            color: #a0b0c8;
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.03);
+            border-color: #4a6a8a;
+            transform: scale(1.02);
+        }
+        .btn:active { transform: scale(0.96); }
+        .status-label {
+            color: #8a9ab0;
+            font-size: 0.85rem;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== FILE SECTION ===== */
+        .file-section {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .file-section input[type="file"] { display: none; }
+        .file-label {
+            background: #0f1a2a;
+            padding: 12px 26px;
+            border-radius: 60px;
+            color: #b0ccee;
+            cursor: pointer;
+            border: 1px dashed #2a3a52;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-label:hover {
+            border-color: #00e5ff;
+            background: #16243a;
+            transform: translateY(-2px);
+        }
+
+        /* ===== CONFIG SECTIONS ===== */
+        .config-section {
+            margin-top: 20px;
+            background: rgba(0, 255, 200, 0.01);
+            border-radius: 26px;
+            padding: 22px 24px;
+            border: 1px solid rgba(0, 255, 200, 0.03);
+            transition: all 0.4s ease;
+        }
+        .config-section:hover {
+            border-color: rgba(0, 255, 200, 0.06);
+        }
+        .config-section h3 {
+            color: #c8d8ec;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .config-section textarea,
+        .config-section input {
+            width: 100%;
+            background: #0a111f;
+            border: 1px solid #1a2a3e;
+            border-radius: 18px;
+            padding: 14px 18px;
+            color: #d8e4f0;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 72px;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .config-section input { min-height: 48px; }
+        .config-section textarea:focus,
+        .config-section input:focus {
+            outline: none;
+            border-color: #00e5ff;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.04);
+        }
+        .config-section .btn-group { margin-top: 14px; }
+        .config-status {
+            color: #6a7a8e;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            color: #3a4a62;
+            font-size: 0.78rem;
+            margin-top: 34px;
+            border-top: 1px solid rgba(0, 255, 200, 0.03);
+            padding-top: 24px;
+            letter-spacing: 0.6px;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(255,255,255,0.15);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 520px) {
+            .container { padding: 22px 16px; border-radius: 32px; }
+            .logo h1 { font-size: 1.7rem; }
+            .logo-icon { width: 42px; height: 42px; font-size: 18px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .stat-number { font-size: 2rem; }
+            .control-card { padding: 20px 16px; }
+            .btn { font-size: 0.8rem; padding: 10px 14px; min-width: 60px; }
+            .status-badge { padding: 6px 16px; font-size: 0.7rem; }
+            .config-section { padding: 16px; }
+        }
+        @media (max-width: 380px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">7X</div>
+                <h1>7XP <span style="-webkit-text-fill-color:#00ff88;">HOS</span></h1>
+            </div>
+            <div class="status-badge">
+                <span class="status-dot"></span> SYSTEM ONLINE
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number" id="totalAccounts">0</div><div class="stat-label">📁 Total Accounts</div></div>
+            <div class="stat-card"><div class="stat-number" id="genSuccess">0</div><div class="stat-label">✅ Generated (Success)</div></div>
+            <div class="stat-card"><div class="stat-number" id="genFail">0</div><div class="stat-label">❌ Generated (Fail)</div></div>
+            <div class="stat-card"><div class="stat-number" id="botStatus">⚪</div><div class="stat-label">🤖 Bot Status</div></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-grid">
+            <div class="control-card">
+                <h3>⚙️ GENERATOR</h3>
+                <div class="btn-group">
+                    <button class="btn btn-start" id="startGen">▶ Start</button>
+                    <button class="btn btn-stop" id="stopGen">⏹ Stop</button>
+                </div>
+                <div class="status-label"><span id="genStatusLabel">⏹ Stopped</span></div>
+            </div>
+            <div class="control-card">
+                <h3>🤖 TCP BOT</h3>
+                <div class="btn-group">
+                    <button class="btn btn-start" id="startBot">▶ Start</button>
+                    <button class="btn btn-stop" id="stopBot">⏹ Stop</button>
+                </div>
+                <div class="status-label"><span id="botStatusLabel">⏹ Stopped</span></div>
+            </div>
+        </div>
+
+        <!-- File Management -->
+        <div class="control-card" style="margin-bottom:20px;">
+            <h3>📂 FILE MANAGEMENT</h3>
+            <div class="file-section">
+                <label class="file-label" for="fileUpload">📤 Upload accounts-bd.json</label>
+                <input type="file" id="fileUpload" accept=".json" />
+                <button class="btn btn-primary" id="downloadBtn">📥 Download</button>
+            </div>
+        </div>
+
+        <!-- Room Name -->
+        <div class="config-section">
+            <h3>🏠 ROOM NAME</h3>
+            <input type="text" id="roomInput" placeholder="Enter room name with BB codes..." />
+            <div class="btn-group">
+                <button class="btn btn-primary" id="applyNewRoom">✅ New Only</button>
+                <button class="btn btn-start" id="applyAllRoom">🔄 Apply to All</button>
+            </div>
+            <div class="config-status" id="roomStatus"></div>
+        </div>
+
+        <!-- Bio Text -->
+        <div class="config-section">
+            <h3>✏️ BIO TEXT</h3>
+            <textarea id="bioInput" placeholder="Enter new bio text with BB codes..."></textarea>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="applyNewBio">✅ New Only</button>
+                <button class="btn btn-start" id="applyAllBio">🔄 Apply to All</button>
+            </div>
+            <div class="config-status" id="bioStatus"></div>
+        </div>
+
+        <div class="footer">⚡ 7XP HOS v2.0 · Premium Control Panel · Developed by MARUF</div>
+    </div>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ============================================================
+        // 1. PARTICLES BACKGROUND
+        // ============================================================
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const count = 45;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = 3 + Math.random() * 12;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = 18 + Math.random() * 30 + 's';
+                p.style.animationDelay = Math.random() * 25 + 's';
+                p.style.opacity = 0.2 + Math.random() * 0.4;
+                container.appendChild(p);
+            }
+        })();
+
+        // ============================================================
+        // 2. API HELPER
+        // ============================================================
+        const API = '/api';
+        let statusInterval = null;
+
+        async function fetchStatus() {
+            try {
+                const res = await fetch(`${API}/status`);
+                const data = await res.json();
+
+                animateNumber('totalAccounts', data.total || 0);
+                animateNumber('genSuccess', data.success || 0);
+                animateNumber('genFail', data.fail || 0);
+
+                document.getElementById('genStatusLabel').innerHTML = data.generator ? '🟢 Running' : '⏹ Stopped';
+                document.getElementById('botStatusLabel').innerHTML = data.bot ? '🟢 Running' : '⏹ Stopped';
+                document.getElementById('botStatus').innerText = data.bot ? '🟢' : '⚪';
+
+                document.getElementById('bioInput').value = data.bio || '';
+                document.getElementById('roomInput').value = data.room || '';
+            } catch (e) {
+                console.error('Status fetch error:', e);
+            }
+        }
+
+        // ============================================================
+        // 3. NUMBER ANIMATION
+        // ============================================================
+        function animateNumber(id, target) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const current = parseInt(el.innerText.replace(/,/g, '')) || 0;
+            if (current === target) return;
+            const duration = 600;
+            const startTime = performance.now();
+            const startVal = current;
+
+            function update(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const val = Math.round(startVal + (target - startVal) * eased);
+                el.innerText = val;
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.innerText = target;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // ============================================================
+        // 4. ACTION HELPER
+        // ============================================================
+        async function action(endpoint, btn) {
+            if (!btn) return;
+            btn.classList.add('loading');
+            const origText = btn.innerText;
+            btn.innerHTML = '<span class="spinner"></span>';
+            try {
+                const res = await fetch(`${API}/${endpoint}`, { method: 'POST' });
+                const data = await res.json();
+                alert('✅ Action: ' + data.status);
+            } catch (e) {
+                alert('❌ Error! Check console.');
+                console.error(e);
+            }
+            btn.classList.remove('loading');
+            btn.innerText = '✔ Done';
+            setTimeout(() => {
+                btn.innerText = origText;
+            }, 1500);
+            fetchStatus();
+        }
+
+        // ============================================================
+        // 5. EVENT LISTENERS
+        // ============================================================
+
+        // --- Controls ---
+        document.getElementById('startGen').addEventListener('click', function() { action('start_gen', this); });
+        document.getElementById('stopGen').addEventListener('click', function() { action('stop_gen', this); });
+        document.getElementById('startBot').addEventListener('click', function() { action('start_bot', this); });
+        document.getElementById('stopBot').addEventListener('click', function() { action('stop_bot', this); });
+
+        // --- Download ---
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            window.location.href = `${API}/download`;
+        });
+
+        // --- Upload ---
+        document.getElementById('fileUpload').addEventListener('change', async function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                alert('✅ Uploaded: ' + data.status);
+                fetchStatus();
+            } catch (e) {
+                alert('❌ Upload failed!');
+                console.error(e);
+            }
+            this.value = '';
+        });
+
+        // --- Room Name ---
+        document.getElementById('applyNewRoom').addEventListener('click', async function() {
+            const room = document.getElementById('roomInput').value.trim();
+            if (!room) return alert('⚠️ Please enter a room name.');
+            const res = await fetch(`${API}/update_room`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ room_name: room, apply_to: 'new' })
+            });
+            const data = await res.json();
+            document.getElementById('roomStatus').innerText = '✅ Saved for new accounts.';
+        });
+
+        document.getElementById('applyAllRoom').addEventListener('click', async function() {
+            const room = document.getElementById('roomInput').value.trim();
+            if (!room) return alert('⚠️ Please enter a room name.');
+            if (!confirm('🔄 This will restart the bot and apply room to ALL accounts. Continue?')) return;
+            const res = await fetch(`${API}/update_room`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ room_name: room, apply_to: 'all' })
+            });
+            const data = await res.json();
+            document.getElementById('roomStatus').innerText = '✅ Applied to all! Bot restarting...';
+            fetchStatus();
+        });
+
+        // --- Bio Text ---
+        document.getElementById('applyNewBio').addEventListener('click', async function() {
+            const bio = document.getElementById('bioInput').value.trim();
+            if (!bio) return alert('⚠️ Please write a bio.');
+            const res = await fetch(`${API}/update_bio`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bio: bio, apply_to: 'new' })
+            });
+            const data = await res.json();
+            document.getElementById('bioStatus').innerText = '✅ Saved for new accounts.';
+        });
+
+        document.getElementById('applyAllBio').addEventListener('click', async function() {
+            const bio = document.getElementById('bioInput').value.trim();
+            if (!bio) return alert('⚠️ Please write a bio.');
+            if (!confirm('🔄 This will restart the bot and apply bio to ALL accounts. Continue?')) return;
+            const res = await fetch(`${API}/update_bio`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bio: bio, apply_to: 'all' })
+            });
+            const data = await res.json();
+            document.getElementById('bioStatus').innerText = '✅ Applied to all! Bot restarting...';
+            fetchStatus();
+        });
+
+        // ============================================================
+        // 6. AUTO REFRESH
+        // ============================================================
+        fetchStatus();
+        statusInterval = setInterval(fetchStatus, 3000);
+    </script>
+</body>
+</html>
